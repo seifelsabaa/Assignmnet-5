@@ -1,0 +1,229 @@
+---
+
+(2) README (English Version)
+
+README – External Merge Sort
+
+1. Memory Constraints Assumed
+
+The program assumes that the available memory is only 4 MB.
+Since the input file is much larger than the RAM, we cannot load it entirely at once.
+Therefore, the file must be divided into smaller chunks that fit inside memory.
+
+
+---
+
+2. Chunk Size Used
+
+If each integer takes 4 bytes:
+
+4 MB ≈ 4,000,000 bytes
+
+Maximum integers per chunk = 4,000,000 / 4 = 1,000,000 integers
+
+
+Thus, each chunk contains up to 1 million integers, sorted independently.
+
+
+---
+
+3. Merge Strategy
+
+The implementation uses a K-way Merge strategy:
+
+1. Read a chunk that fits in memory.
+
+
+2. Sort it in RAM using a built-in sorting algorithm.
+
+
+3. Write the sorted chunk to a temporary run file.
+
+
+4. After generating all runs, merge them:
+
+Several run files are opened simultaneously.
+
+A Min-Heap is used to pick the smallest element across all runs.
+
+
+
+5. The merged result is written to the final output file.
+
+
+6. All temporary run files are deleted at the end.
+
+
+
+
+---
+
+4. Time Complexity
+
+External Merge Sort consists of two phases:
+
+
+---
+
+A. Run Generation
+
+If the file contains N integers, and each chunk contains M integers:
+
+Number of chunks = N / M
+
+Sorting each chunk takes O(M log M)
+
+
+Total time:
+O((N/M) × M log M) = O(N log M)
+
+
+---
+
+B. K-way Merge
+
+Each push/pop from the heap costs O(log k), where k = number of runs.
+
+Total operations = N
+
+
+Total time:
+O(N log k)
+
+
+---
+
+5. I/O Analysis
+
+External sorting is I/O-bound, not CPU-bound.
+
+Run Generation:
+
+Read N elements
+
+Write N elements
+I/O = 2N
+
+
+Merge Phase:
+
+Read N elements
+
+Write N elements
+I/O = 2N
+
+
+Total I/O = 4N operations
+
+
+---
+
+============================================================================================
+
+(3) Short Report
+
+Short Report – External Merge Sort
+
+1. Why External Sorting Is Needed
+
+When the dataset size exceeds available RAM, traditional in-memory sorting algorithms (QuickSort, MergeSort, etc.) cannot be used.
+Many real-world systems handle extremely large datasets, such as:
+
+Database Management Systems
+
+Operating Systems
+
+Search Engines
+
+Big Data Platforms (Hadoop, Spark)
+
+
+These systems commonly store data measured in gigabytes or terabytes, far larger than memory.
+Therefore, External Sorting is required, because it is specifically designed to work efficiently with disk-based data.
+
+
+---
+
+2. How External Merge Sort Works
+
+The algorithm consists of two main phases:
+
+
+---
+
+Phase 1: Run Generation
+
+1. Read a small chunk of the file (fits in RAM).
+
+
+2. Sort the chunk in memory.
+
+
+3. Write the sorted chunk to a temporary file called a run.
+
+
+4. Repeat until the entire file is processed.
+
+
+
+The output of this phase:
+A set of sorted run files stored on disk.
+
+
+---
+
+Phase 2: Multi-way Merge
+
+1. Open several run files at the same time.
+
+
+2. Insert the first element of each run into a Min-Heap.
+
+
+3. Extract the smallest element from the heap, write it to the final output file.
+
+
+4. Replace it with the next element from the same run.
+
+
+5. Continue until all runs are completely merged.
+
+
+
+At the end, all temporary run files are deleted, leaving one fully sorted output file.
+
+
+---
+
+3. Possible Optimizations
+
+A. Buffering
+
+Instead of reading one integer at a time, read a large block (e.g., 4 KB or 8 KB).
+This drastically reduces the number of disk I/O operations.
+
+B. Using a Min-Heap
+
+For k runs, selecting the smallest next element becomes O(log k) instead of O(k).
+This speeds up the merging phase significantly.
+
+C. Multi-pass Merge
+
+If the number of runs is huge, merge them in multiple stages.
+This reduces the heap size and improves performance.
+
+D. Replacement Selection
+
+This technique allows generating runs larger than memory size, reducing the total number of runs and simplifying the merge phase.
+
+
+---
+
+4. Conclusion
+
+External Merge Sort is the standard and most efficient method for sorting very large datasets that cannot fit into memory.
+Although slower than in-memory sorting due to heavy disk I/O, it enables handling data at the scale required by databases, search engines, and distributed systems.
+With optimizations such as buffering and heap-based merging, the algorithm becomes scalable and practical for real-world applications.
+
+
+---
